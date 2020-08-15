@@ -1,14 +1,17 @@
 # QnA Application
-Application used during QnA session of Youth Timothy's Service of GPdI Singapore which will be held on 1st Oct 2016.
-The application skeleton was created in June 2016, but modified and enhanced this week 26-27 Sept 2016 during my spare times.
+This is a modified QnA application with has been ported from MongoDB to MySQL.
+The original QnA application running on MongoDB is located at https://github.com/marthenlt/ask-gpdi-tomotius-sg
 
 Framework stacks:
 - UI: jQuery Mobile
-- Backend: Spring Data MongoDB, Spring Web MVC and RESTful. These are part of Spring Boot Starter Libs. Refer to the pom.xml file for more info.
-- DB: MongoDB
+- Backend: Spring Data JPA, Spring Web MVC and RESTful. These are part of Spring Boot Starter Libs. Refer to the pom.xml file for more info.
+- DB: MySQL
 
 
 Further documentation will be provided.. stay tuned!!
 
 Thanks!
+
 -Marthen Luther-
+
+(15 Aug 2020)
