@@ -43,7 +43,7 @@ public class AskService {
 
     public List<Question> showInPagination(Integer pageNo, Integer itemPerPage) {
         Pageable pageable = PageRequest.of(pageNo, itemPerPage);
-        List<Question> questions = (List<Question>) askRepository.findAllUsersWithPaginationNative(pageable);
+        List<Question> questions = (List<Question>) askRepository.findAll(pageable);
         return questions;
     }
 

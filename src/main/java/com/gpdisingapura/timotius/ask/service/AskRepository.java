@@ -15,21 +15,22 @@ import java.util.Optional;
  * Created by Marthen on 15/08/20.
  */
 
-public interface AskRepository extends JpaRepository<Question, Integer>, PagingAndSortingRepository<Question, Integer> {
+//public interface AskRepository extends JpaRepository<Question, Integer>, PagingAndSortingRepository<Question, Integer> {
+public interface AskRepository extends JpaRepository<Question, Integer> {
 
-    Page<Question> findAllUsersWithPaginationNative(Pageable pageable);
+    Page<Question> findAll(Pageable pageable);
 
-      @Query(value = "SELECT count(*) as total FROM Question q WHERE q.isAnswered = false", nativeQuery = true)
+      @Query(value = "SELECT count(*) as total FROM question WHERE is_answered = false", nativeQuery = true)
       int noOfRecordFoundForIsAnsweredIsFalse();
 
-    @Query(value = "SELECT q FROM Question q WHERE q.postedBy = :name", nativeQuery = true)
+    @Query(value = "SELECT * FROM question WHERE posted_by = :name", nativeQuery = true)
     List<Question> findByPostedBy(String name);
 
-    @Query(value = "SELECT q FROM Question q WHERE q.isAnswered = false order by p.postedAt desc", nativeQuery = true)
+    @Query(value = "SELECT * FROM question WHERE is_answered = false order by posted_at desc", nativeQuery = true)
     List<Question> findAllQuestions();
 
     @Modifying
-    @Query(value = "UPDATE Question q SET q.isAnswered = true WHERE u.id = :questionId", nativeQuery = true)
+    @Query(value = "UPDATE question SET is_answered = true WHERE id = :questionId", nativeQuery = true)
     int modifyById(Integer questionId);
 
 }
