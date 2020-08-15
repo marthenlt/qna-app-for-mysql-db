@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QnA Application 2017 (C) Youth Timothy @GPdI Singapore (Written by: Marthen Luther)</title>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="lazy-loading.js"></script>
+</head>
+
+<body>
+
+<!-- PAGE HOME -->
+<div data-role="page" id="home">
+    <div data-role="header">
+        <h2>QnA Application</h2>
+        <a href="#new"
+           class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-btn-b ui-icon-edit ui-btn-icon-notext">Ask</a>
+    </div>
+    <div data-role="content">
+        <label>Total Questions <span id="questionsNo">0</span></label>
+        <ul id="lazyloader" data-role="listview" data-filter="true" data-listomatic="true">
+        </ul>
+    </div>
+    <div data-role="footer">
+        <h3>&copy;2017 Youth Timothy GPdI Singapore</h3>
+    </div>
+</div>
+<!-- end:PAGE HOME -->
+
+
+<!-- PAGE Detail -->
+<div data-role="page" id="detail">
+    <div data-role="header">
+        <h2>Detail Question</h2>
+        <a href="#home"
+           class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-btn-b ui-icon-home ui-btn-icon-notext">Home</a>
+        <a href="#new"
+           class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-btn-b ui-icon-edit ui-btn-icon-notext">Ask</a>
+    </div>
+    <div data-role="content">
+        <fieldset>
+            <div data-role="fieldcontain">
+                <label for="detailcategory">Category</label>
+                <input type="text" name="detailcategory" id="detailcategory" readonly="true">
+            </div>
+            <div data-role="fieldcontain">
+                <label for="detailquestion">Question</label>
+                <textarea name="detailquestion" id="detailquestion" readonly="true"></textarea>
+            </div>
+        </fieldset>
+
+        <!-- Will activate this feature later on, once the questions has been collected.. Maybe on the day itself, 1 Oct -->
+        <!--
+        <form id="updateQuestion" class="ui-body ui-body-a ui-corner-all" data-ajax="false">
+                <div data-role="fieldcontain">
+                    <input type="hidden" name="id" id="id">
+                    <label for="updateSubmit">If you think this question has been answered, you can click below button to mark this question as "Answered", and thus it will not appear in the front page/home.</label>
+                    <input type="button" name="updateSubmit" id="updateSubmit" value="Answered" data-icon="check">
+                </div>
+        </form>
+        -->
+
+    </div>
+    <div data-role="footer">
+        <h3>&copy;2017 Youth Timothy GPdI Singapore</h3>
+    </div>
+</div>
+<!-- end:PAGE Detail -->
+
+
+ <!--PAGE New-->
+<!--&lt;!&ndash;-->
+<div data-role="page" id="new">
+    <div data-role="header">
+        <h2>New Question</h2>
+        <a href="#home"
+           class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-btn-b ui-icon-home ui-btn-icon-notext ui-btn-icon-notext">Home</a>
+    </div>
+    <div data-role="content">
+
+        <form id="newquestionform" class="ui-body ui-body-a ui-corner-all" data-ajax="false">
+            <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="category" class="select">Category</label>
+                    <select name="category" id="category">
+                        <option value="LDS">LDS</option>
+                        <option value="Character">Character</option>
+                        <option value="Leadership">Leadership</option>
+                    </select>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="question">Question</label>
+                    <input type="text" name="question" id="question" data-clear-btn="true"
+                           placeholder="Place your question here...">
+                </div>
+                <div data-role="fieldcontain">
+                    <input type="button" name="submit" id="submit" value="Save" data-icon="check">
+                </div>
+            </fieldset>
+        </form>
+
+    </div>
+    <div data-role="footer">
+        <h3>&copy;2017 Youth Timothy GPdI Singapore</h3>
+    </div>
+</div>
+<!--&ndash;&gt;-->
+ <!--end:PAGE New-->
+
+
+<!-- PAGE After Posting Question.. -->
+<div data-role="page" id="successfulPostedQuestion">
+    <div data-role="header">
+        <h2>Successful</h2>
+    </div>
+    <div data-role="content">
+        <div>
+            <label>Your question has been posted. You can choose to ask another question or to see your question being
+                displayed at front page (Home).</label>
+        </div>
+        <a href="#new"
+           class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-btn-b ui-icon-edit">Ask</a>
+        <a href="#home"
+           class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-btn-b ui-icon-home">Home</a>
+    </div>
+    <div data-role="footer">
+        <h3>&copy;2017 Youth Timothy GPdI Singapore</h3>
+    </div>
+</div>
+<!-- end:PAGE After Posting Question. -->
+
+<!-- PAGE After Marked Question.. -->
+<div data-role="page" id="successfulMarkedQuestion">
+    <div data-role="header">
+        <h2>Successful</h2>
+    </div>
+    <div data-role="content">
+        <div>
+            <label>The question has been marked as "Answered". You can choose to ask another question or go to the front page (Home).</label>
+        </div>
+        <a href="#new"
+           class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-btn-b ui-icon-edit">Ask</a>
+        <a href="#home"
+           class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-btn-b ui-icon-home">Home</a>
+    </div>
+    <div data-role="footer">
+        <h3>&copy;2017 Youth Timothy GPdI Singapore</h3>
+    </div>
+</div>
+<!-- end:PAGE After Marked Question. -->
+
+</body>
+
+</html>
