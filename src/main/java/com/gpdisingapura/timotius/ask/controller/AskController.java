@@ -62,7 +62,7 @@ public class AskController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/numberOfUnansweredRecords", produces = {MediaType.APPLICATION_JSON_VALUE})
     ResponseEntity<Long> noOfRecordFoundForIsAnsweredIsFalse() throws QuestionDoesNotExistException {
-        Long noOfRecs = askService.noOfRecordFoundForIsAnsweredIsFalse();
+        Long noOfRecs = new Long(askService.noOfRecordFoundForIsAnsweredIsFalse());
         return new ResponseEntity<Long>(noOfRecs, HttpStatus.OK);
     }
 
