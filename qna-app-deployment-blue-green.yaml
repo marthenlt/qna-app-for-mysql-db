@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qna-app-blue
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  selector:
+    app-blue: qna-app-blue
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qna-application-blue
+  labels:
+    app-blue: qna-app-blue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app-blue: qna-app-blue
+  template:
+    metadata:
+      labels:
+        app-blue: qna-app-blue
+    spec:
+      containers:
+        - name: qna-app-blue
+          image: marthenl/qna-app-for-mysql-db:blue-0.1
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qna-app-green
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  selector:
+    app-green: qna-app-green
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qna-application-green
+  labels:
+    app-green: qna-app-green
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app-green: qna-app-green
+  template:
+    metadata:
+      labels:
+        app-green: qna-app-green
+    spec:
+      containers:
+        - name: qna-app-green
+          image: marthenl/qna-app-for-mysql-db:green-0.2
+          ports:
+            - containerPort: 8080
