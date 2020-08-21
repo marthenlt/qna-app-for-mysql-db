@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -57,14 +58,17 @@ public class AskService {
         return askRepository.findAllQuestions();
     }
 
+    @Transactional
     public void modifyById(Integer questionId) {
         askRepository.modifyById(questionId);
     }
 
+    @Transactional
     public void deleteQuestion(Integer questionId) {
         askRepository.deleteById(questionId);
     }
 
+    @Transactional
     public void deleteAll() {
         askRepository.deleteAll();
     }

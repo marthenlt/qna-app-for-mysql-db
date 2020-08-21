@@ -4,37 +4,37 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>QnA Application 2020 Youth Timothy GPdI Singapore (Written by: Marthen Luther)</title>
+    <title>QnA Application 2020 Demo - by. Marthen Luther</title>
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script src="lazy-loading.js"></script>
 </head>
 
-<style>
-.myDiv {
-  border: 5px outset red;
-  background-color: lightgreen;
-  text-align: center;
-}
-</style>
+<!--<style>-->
+<!--.myDiv {-->
+<!--  border: 5px outset red;-->
+<!--  background-color: lightgreen;-->
+<!--  text-align: center;-->
+<!--}-->
+<!--</style>-->
 
 <body>
 
 <!-- PAGE HOME -->
 <div data-role="page" id="home">
     <div data-role="header">
-        <h2>QnA App v2.0</h2>
+        <h2>QnA App v2.1</h2>
         <a href="#new"
            class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-btn-b ui-icon-edit ui-btn-icon-notext">Ask</a>
     </div>
     <div data-role="content">
-        <label>Total Questions <span id="questionsNo">0</span></label>
+        <label>Total Questions:  <span id="questionsNo">0</span></label>
         <ul id="lazyloader" data-role="listview" data-filter="true" data-listomatic="true">
         </ul>
     </div>
-    <div class="myDiv">
-        <h3>&copy;2020 Marthen Luther</h3>
+    <div data-role="footer">
+        <h4>&copy;Marthen Luther, Java &amp; GraalVM, Oracle</h4>
     </div>
 </div>
 <!-- end:PAGE HOME -->
@@ -62,7 +62,6 @@
         </fieldset>
 
         <!-- Will activate this feature later on, once the questions has been collected.. Maybe on the day itself, 1 Oct -->
-        <!--
         <form id="updateQuestion" class="ui-body ui-body-a ui-corner-all" data-ajax="false">
                 <div data-role="fieldcontain">
                     <input type="hidden" name="id" id="id">
@@ -70,18 +69,16 @@
                     <input type="button" name="updateSubmit" id="updateSubmit" value="Answered" data-icon="check">
                 </div>
         </form>
-        -->
 
     </div>
-    <div class="myDiv">
-        <h3>&copy;2020 Marthen Luther</h3>
+    <div data-role="footer">
+        <h4>&copy;Marthen Luther, Java &amp; GraalVM, Oracle</h4>
     </div>
 </div>
 <!-- end:PAGE Detail -->
 
 
  <!--PAGE New-->
-<!--&lt;!&ndash;-->
 <div data-role="page" id="new">
     <div data-role="header">
         <h2>New Question</h2>
@@ -112,11 +109,10 @@
         </form>
 
     </div>
-    <div class="myDiv">
-        <h3>&copy;2020 Marthen Luther</h3>
+    <div data-role="footer">
+        <h4>&copy;Marthen Luther, Java &amp; GraalVM, Oracle</h4>
     </div>
 </div>
-<!--&ndash;&gt;-->
  <!--end:PAGE New-->
 
 
@@ -135,8 +131,8 @@
         <a href="#home"
            class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-btn-b ui-icon-home">Home</a>
     </div>
-    <div class="myDiv">
-        <h3>&copy;2020 Marthen Luther</h3>
+    <div data-role="footer">
+        <h4>&copy;Marthen Luther, Java &amp; GraalVM, Oracle</h4>
     </div>
 </div>
 <!-- end:PAGE After Posting Question. -->
@@ -155,8 +151,8 @@
         <a href="#home"
            class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-btn-b ui-icon-home">Home</a>
     </div>
-    <div class="myDiv">
-        <h3>&copy;2020 Marthen Luther</h3>
+    <div data-role="footer">
+        <h4>&copy;Marthen Luther, Java &amp; GraalVM, Oracle</h4>
     </div>
 </div>
 <!-- end:PAGE After Marked Question. -->

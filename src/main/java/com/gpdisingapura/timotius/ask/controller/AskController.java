@@ -108,13 +108,13 @@ public class AskController {
     }
 
 
-//    @RequestMapping(method = RequestMethod.PUT, value = "/update")
-//    ResponseEntity<Void> modifyById(
-//            @RequestParam("id") String questionId)
-//            throws QuestionDoesNotExistException {
-//        askService.modifyById(questionId);
-//        return new ResponseEntity<Void>(HttpStatus.OK);
-//    }
+    @RequestMapping(method = RequestMethod.PUT, value = "/update")
+    ResponseEntity<Void> modifyById(
+            @RequestParam("id") Integer questionId)
+            throws QuestionDoesNotExistException {
+        askService.modifyById(questionId);
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
 
 //    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{questionId}")
 //    ResponseEntity<Void> deleteQuestion(@PathVariable String questionId) throws QuestionDoesNotExistException {
