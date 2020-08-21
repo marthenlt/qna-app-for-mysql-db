@@ -1,3 +1,3 @@
 create database qna;
-create user 'marthen'@'%' identified by 'marthenpasswd';
-grant all on qna.* to 'marthen'@'%';
+create user 'java_app'@'%' identified by 'Welcome1!';
+grant all on qna.* to 'java_app'@'%';
