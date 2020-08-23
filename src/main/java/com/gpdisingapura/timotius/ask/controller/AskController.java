@@ -79,6 +79,26 @@ public class AskController {
         return new ResponseEntity<List<Question>>(questions, HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/benchmark", produces = {MediaType.APPLICATION_JSON_VALUE})
+    ResponseEntity<List<Question>> benchmark() throws QuestionDoesNotExistException {
+        List<Question> questions = askService.findAll();
+
+        //== start of testing ==
+        //create load..
+        final long startTime = System.currentTimeMillis();
+        final int iterations = 1_000_000; //1 million iterations..
+        for (int i = 1; i <= iterations; i++) {
+            questions.stream()
+                    .sorted((a, b) -> -a.getId().compareTo(b.getId()))
+                    .filter(q -> q.getCategory().equalsIgnoreCase("Leadership"));
+        }
+        long endTime = System.currentTimeMillis() - startTime;
+        System.out.println("Total time: " + endTime);
+        //== end of testing ==
+
+        return new ResponseEntity<List<Question>>(questions, HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/downloadQs", produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
     ResponseEntity<InputStreamResource> downloadQs() throws QuestionDoesNotExistException {
         List<Question> questions = askService.findAll();
