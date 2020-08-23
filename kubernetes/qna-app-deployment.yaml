@@ -29,6 +29,6 @@ spec:
     spec:
       containers:
         - name: qna-app
-          image: marthenl/qna-app-for-mysql-db:2.1.1
+          image: marthenl/qna-app-for-mysql-db:2.3
           ports:
             - containerPort: 8080
