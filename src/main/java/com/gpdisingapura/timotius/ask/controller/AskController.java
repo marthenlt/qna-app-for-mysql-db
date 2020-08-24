@@ -1,5 +1,6 @@
 package com.gpdisingapura.timotius.ask.controller;
 
+import com.gpdisingapura.timotius.ask.graalvm.security.Services;
 import com.gpdisingapura.timotius.ask.model.Question;
 import com.gpdisingapura.timotius.ask.model.QuestionDoesNotExistException;
 import com.gpdisingapura.timotius.ask.service.AskService;
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.plaf.synth.SynthTextAreaUI;
+import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -255,21 +258,28 @@ public class AskController {
     @RequestMapping(method = RequestMethod.GET, value = "/polyglotjs1secure", produces = {MediaType.TEXT_PLAIN_VALUE})
     public String polyglotjs1secure() {
 
-        //forbid all access..
+        //allowed access to method that annotated with @HostAccess.Export
+        //  -- see : Employee.getName
+        //           Services.createEmployee
+        //
+        //  -- the guest language is trying to call Services.exitVM method without @HostAccess.Export annotation..
 
-        Context c =
-                Context.newBuilder("js")
-                        .allowAllAccess(false)
-                        .build();
-        c.eval("js",
-                "var Thread = {sleep: function(ms) { var start = Date.now(); while (true) {var clock = (Date.now() - start); if (clock >= ms) break;}}};" +
-                        "var d1 = new Date(); +" +
-                        "console.log('start ' + d1.toLocaleTimeString());" +
-                        "Thread.sleep(1000);" +
-                        "var d2 = new Date();" +
-                        "console.log('end ' + d2.toLocaleTimeString());"
-                );
-        c.close(true);
+        try (Context context = Context.create("js")) {
+            Services services = new Services();
+            context.getBindings("js").putMember("services", services);
+            String name = context.eval("js",
+                    "let emp = services.createEmployee('John Doe');" +
+                            "emp.getName()").asString();
+            System.out.println("name retrieved from JavaScript guest language: " + name);
+
+            try {
+                System.out.println("calling exitVM() now..");
+                context.eval("js", "services.exitVM()");
+                System.out.println("finished calling exitVM()  ==>  this line is never been called");
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
 
         return "check the log..";
     }
@@ -323,6 +333,30 @@ public class AskController {
 
         return "check the log..";
     }
+
+
+//    @RequestMapping(method = RequestMethod.GET, value = "/polyglotjs4secure", produces = {MediaType.TEXT_PLAIN_VALUE})
+//    public String polyglotjs4secure() {
+//
+//        //to be completed..
+//
+//        Context c =
+//                Context.newBuilder("js")
+//                        .allowAllAccess(false)
+//                        .option("js.strict", "true")
+//                        .build();
+//        c.eval("js",
+//                "var Thread = {sleep: function(ms) { var start = Date.now(); while (true) {var clock = (Date.now() - start); if (clock >= ms) break;}}};" +
+//                        "var d1 = new Date(); +" +
+//                        "console.log('start ' + d1.toLocaleTimeString());" +
+//                        "Thread.sleep(1000);" +
+//                        "var d2 = new Date();" +
+//                        "console.log('end ' + d2.toLocaleTimeString());"
+//        );
+//        c.close(true);
+//
+//        return "check the log..";
+//    }
 
 
 //    @RequestMapping(value = "/geturl", produces = {MediaType.APPLICATION_JSON_VALUE})
