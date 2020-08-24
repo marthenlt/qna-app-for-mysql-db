@@ -3,10 +3,7 @@ package com.gpdisingapura.timotius.ask.controller;
 import com.gpdisingapura.timotius.ask.model.Question;
 import com.gpdisingapura.timotius.ask.model.QuestionDoesNotExistException;
 import com.gpdisingapura.timotius.ask.service.AskService;
-import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.PolyglotException;
-import org.graalvm.polyglot.Source;
-import org.graalvm.polyglot.Value;
+import org.graalvm.polyglot.*;
 import org.graalvm.polyglot.proxy.ProxyObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -88,25 +85,6 @@ public class AskController {
         return new ResponseEntity<List<Question>>(questions, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/benchmark", produces = {MediaType.APPLICATION_JSON_VALUE})
-    ResponseEntity<List<Question>> benchmark() throws QuestionDoesNotExistException {
-        List<Question> questions = askService.findAll();
-
-        //== start of testing ==
-        //create load..
-        final long startTime = System.currentTimeMillis();
-        final int iterations = 1_000_000; //1 million iterations..
-        for (int i = 1; i <= iterations; i++) {
-            questions.stream()
-                    .sorted((a, b) -> -a.getId().compareTo(b.getId()))
-                    .filter(q -> q.getCategory().equalsIgnoreCase("Leadership"));
-        }
-        long endTime = System.currentTimeMillis() - startTime;
-        System.out.println("Total time: " + endTime);
-        //== end of testing ==
-
-        return new ResponseEntity<List<Question>>(questions, HttpStatus.OK);
-    }
 
     @RequestMapping(method = RequestMethod.GET, value = "/downloadQs", produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
     ResponseEntity<InputStreamResource> downloadQs() throws QuestionDoesNotExistException {
@@ -136,6 +114,7 @@ public class AskController {
                 .body(new InputStreamResource(new ByteArrayInputStream(sb.toString().getBytes())));
     }
 
+
     @RequestMapping(method = RequestMethod.PUT, value = "/update")
     ResponseEntity<Void> modifyById(
             @RequestParam("id") Integer questionId)
@@ -144,26 +123,69 @@ public class AskController {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
+
+//    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{questionId}")
+//    ResponseEntity<Void> deleteQuestion(@PathVariable String questionId) throws QuestionDoesNotExistException {
+//        askService.deleteQuestion(questionId);
+//        return new ResponseEntity<Void>(HttpStatus.OK);
+//    }
+
+
+//    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteAll")
+//    ResponseEntity<Void> deleteAll() throws QuestionDoesNotExistException {
+//        askService.deleteAll();
+//        return new ResponseEntity<Void>(HttpStatus.OK);
+//    }
+
+
+
+    /*
+    Below method is to test Graal JIT - a simple Lambda API in the loop
+     */
+
+    @RequestMapping(method = RequestMethod.GET, value = "/benchmark", produces = {MediaType.APPLICATION_JSON_VALUE})
+    ResponseEntity<List<Question>> benchmark() throws QuestionDoesNotExistException {
+        List<Question> questions = askService.findAll();
+
+        //== start of testing ==
+        //create load..
+        final long startTime = System.currentTimeMillis();
+        final int iterations = 1_000_000; //1 million iterations..
+        for (int i = 1; i <= iterations; i++) {
+            questions.stream()
+                    .sorted((a, b) -> -a.getId().compareTo(b.getId()))
+                    .filter(q -> q.getCategory().equalsIgnoreCase("Leadership"));
+        }
+        long endTime = System.currentTimeMillis() - startTime;
+        System.out.println("Total time: " + endTime);
+        //== end of testing ==
+
+        return new ResponseEntity<List<Question>>(questions, HttpStatus.OK);
+    }
+
+
+
+    /*
+    Below methods are meant to test GraalVM JavaScript Polyglot
+     */
+
     @RequestMapping(method = RequestMethod.GET, value = "/polyglotjs1", produces = {MediaType.TEXT_PLAIN_VALUE})
     public String polyglot() {
+
+        //passing object from Java to JavaScript via Context.getBindings().putMember()..
+
         Context c = Context.create("js");
-        // create a Map and store it as JavaScript object (that is what ProxyObject
-        // fromMap is for) in the bindings object
         Map<String, Object> backingMap = new HashMap<>();
         backingMap.put("myKey", "myValue");
         backingMap.put("myQuestion", "2*3");
         c.getBindings("js").putMember("hostObject", ProxyObject.fromMap(backingMap));
-        // access the Java Map turned JavaScript object in bindings from JavaScript:
         Integer answer = c.eval("js", "print(`your key = ${hostObject.myKey}`);"
                 + "hostObject.yourAnswer = eval(hostObject.myQuestion) ; eval(hostObject.yourAnswer)")
                 .asInt();
-        // the answer is available from the evaluation of the JS snippet
         System.out.println("The Answer to " + backingMap.get("myQuestion") + " via variable answer = " + answer);
-        // and also from the updated hostObject/backingMap in the bindings map
         System.out.println("The Answer to " + backingMap.get("myQuestion") + " via backingMap.get(\"yourAnswer\")= " + backingMap.get("yourAnswer"));
 
-        // creating new objects in JavaScript adds them to the bindings object - and
-        // makes them accessible in Java
+        // create JavaScript variable, and makes it accessible in Java
         c.eval("js", "var PI = 3.141592");
         System.out.println("Current contents of Bindings object: " + c.getBindings("js").getMemberKeys());
         Double pi = c.getBindings("js").getMember("PI").asDouble();
@@ -172,13 +194,15 @@ public class AskController {
         return "check the log..";
     }
 
+
     @RequestMapping(method = RequestMethod.GET, value = "/polyglotjs2", produces = {MediaType.TEXT_PLAIN_VALUE})
     public String testJS() {
+
+        //passing object from Java to JavaScript via Value..execute()..
+
         Context polyglot = Context.create();
         polyglot.eval("js", "print('Hello JavaScript!')");
-
         Value helloWorldFunction = polyglot.eval("js", "(function(name) { return `Hello ${name}, welcome to the world of JavaScript` })");
-        // Use the function
         String greeting = helloWorldFunction.execute("John Doe").asString();
         System.out.println(greeting);
 
@@ -192,8 +216,12 @@ public class AskController {
         return greeting;
     }
 
+
     @RequestMapping(method = RequestMethod.GET, value = "/polyglotjs3", produces = {MediaType.TEXT_PLAIN_VALUE})
     public String calculatorJS() {
+
+        //loading external JavaScript file..
+
         String resultFibonacci = "";
         String resultSqrt = "";
         Context c = Context.create("js");
@@ -201,9 +229,9 @@ public class AskController {
         try {
             // [1] Create an environment variable of directory that contains "calculator.js"
             //     Example:
-            //        export CALCULATOR_JS_DIR=/Users/mluther/java/demos/opensource-virtual-connect/ask-gpdi-tomotius-sg/polyglot
+            //        export POLYGLOT_JS_DIR=/Users/mluther/java/demos/opensource-virtual-connect/ask-gpdi-tomotius-sg/polyglot
             // [2] Load the file from System.getenv() ..
-            File calculatorJS = new File(System.getenv().get("CALCULATOR_JS_DIR") + "/calculator.js");
+            File calculatorJS = new File(System.getenv().get("POLYGLOT_JS_DIR") + "/calculator.js");
             c.eval(Source.newBuilder("js", calculatorJS).build());
 
             Value fibonacciFunction = c.getBindings("js").getMember("fibonacci");
@@ -222,6 +250,80 @@ public class AskController {
 
         return resultFibonacci + "  ;  " + resultSqrt;
     }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/polyglotjs1secure", produces = {MediaType.TEXT_PLAIN_VALUE})
+    public String polyglotjs1secure() {
+
+        //forbid all access..
+
+        Context c =
+                Context.newBuilder("js")
+                        .allowAllAccess(false)
+                        .build();
+        c.eval("js",
+                "var Thread = {sleep: function(ms) { var start = Date.now(); while (true) {var clock = (Date.now() - start); if (clock >= ms) break;}}};" +
+                        "var d1 = new Date(); +" +
+                        "console.log('start ' + d1.toLocaleTimeString());" +
+                        "Thread.sleep(1000);" +
+                        "var d2 = new Date();" +
+                        "console.log('end ' + d2.toLocaleTimeString());"
+                );
+        c.close(true);
+
+        return "check the log..";
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/polyglotjs2secure", produces = {MediaType.TEXT_PLAIN_VALUE})
+    public String polyglotjs2secure() {
+
+        //forbid to load external JavaScript file..
+
+        Context c =
+                Context.newBuilder("js")
+                        .allowAllAccess(true)
+//                        .allowIO(true)
+                        .allowIO(false)
+                        .build();
+        String loadHelloJS = "load('" + System.getenv().get("POLYGLOT_JS_DIR") + "/hello.js')";
+        c.eval("js", loadHelloJS);
+        c.close(true);
+
+        return "check the log..";
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/polyglotjs3secure", produces = {MediaType.TEXT_PLAIN_VALUE})
+    public String polyglotjs3secure() {
+
+        //forbid to execute host access (Java)
+
+        Context c =
+                Context.newBuilder("js")
+                        .allowAllAccess(true)
+//                        .allowHostAccess(HostAccess.ALL)
+                        .allowHostAccess(HostAccess.NONE)
+                        .build();
+        String str = c.eval("js", "console.log('Inside JavaScript context now..'); " +
+                "var jsArr = [\"String created from JavaScript\", \"Another string..\", \"third string\"]; " +
+                "var strArrType = Java.type(\"java.lang.String[]\"); " +
+                "var javaArr = Java.to(jsArr, strArrType); " +
+                "console.log('Java array size: ' + javaArr.length); " +
+                "console.log('String 1: ' + javaArr[0]); " +
+                "console.log('String 2: ' + javaArr[1]); " +
+                "console.log('String 3: ' + javaArr[2]); " +
+                "console.log('.. ==> returning \"String 1\" back to Java'); " +
+                "javaArr[0];").asString();
+        System.out.println("*********************************************");
+        System.out.println("Inside Java context now..");
+        System.out.println("The value of 'String 1' given by Javascript is: " + str);
+
+        c.close(true);
+
+        return "check the log..";
+    }
+
 
 //    @RequestMapping(value = "/geturl", produces = {MediaType.APPLICATION_JSON_VALUE})
 //    public String getURL(HttpServletRequest request) {
@@ -264,17 +366,6 @@ public class AskController {
 //        return request.getLocalName();
 //    }
 
-//    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{questionId}")
-//    ResponseEntity<Void> deleteQuestion(@PathVariable String questionId) throws QuestionDoesNotExistException {
-//        askService.deleteQuestion(questionId);
-//        return new ResponseEntity<Void>(HttpStatus.OK);
-//    }
-
-//    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteAll")
-//    ResponseEntity<Void> deleteAll() throws QuestionDoesNotExistException {
-//        askService.deleteAll();
-//        return new ResponseEntity<Void>(HttpStatus.OK);
-//    }
 
 
 }

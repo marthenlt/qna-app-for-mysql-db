@@ -19,16 +19,19 @@ public interface AskRepository extends JpaRepository<Question, Integer> {
     Page<Question> findAll(Pageable pageable);
 
     @Query(value = "SELECT count(*) as total FROM question WHERE is_answered = false", nativeQuery = true)
+//    @Query(value = "SELECT count(*) as total FROM question WHERE is_answered = false or 1=1", nativeQuery = true) //security test
     int noOfRecordFoundForIsAnsweredIsFalse();
 
     @Query(value = "SELECT * FROM question WHERE posted_by = :name", nativeQuery = true)
     List<Question> findByPostedBy(String name);
 
     @Query(value = "SELECT * FROM question WHERE is_answered = false order by posted_at desc", nativeQuery = true)
+//    @Query(value = "SELECT * FROM question WHERE is_answered = false or 1=1 order by posted_at desc", nativeQuery = true) //security test
     List<Question> findAllQuestions();
 
     @Modifying
     @Query(value = "UPDATE question SET is_answered = true WHERE id = :questionId", nativeQuery = true)
+//    @Query(value = "UPDATE question SET is_answered = true WHERE id = :questionId and is_answered = false", nativeQuery = true) //security test
     int modifyById(Integer questionId);
 
 }
