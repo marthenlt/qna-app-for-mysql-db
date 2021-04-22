@@ -160,7 +160,7 @@ public class AskController {
                     .filter(q -> q.getCategory().equalsIgnoreCase("Leadership"));
         }
         long endTime = System.currentTimeMillis() - startTime;
-        System.out.println("Total time: " + endTime);
+//        System.out.println("Total time: " + endTime);
         //== end of testing ==
 
         return new ResponseEntity<List<Question>>(questions, HttpStatus.OK);
