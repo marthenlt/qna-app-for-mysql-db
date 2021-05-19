@@ -7,11 +7,15 @@ Framework stacks:
 - Backend: Spring Data JPA, Spring Web MVC and RESTful. These are part of Spring Boot Starter Libs. Refer to the pom.xml file for more info.
 - DB: MySQL
 
-
-Further documentation will be provided.. stay tuned!!
+Update:
+22 Apr 2021: 
+- Add JFR (Java Flight Recording) JVM options to capture GC paused time & CPU & Memory utilisation.
+- `c2-with-jfr.sh` is shell sript to run the application and capture JFR on standard C2 JIT 
+- `graal-with-jfr.sh` is shell sript to run the application and capture JFR on standard Graal JIT 
 
 Thanks!
 
 -Marthen Luther-
 
 (15 Aug 2020)
+(22 Apr 2021)
