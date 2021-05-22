@@ -1,0 +1,16 @@
+# GraalVM EE - from local registry
+FROM localhost:5000/marthen-oracle-graalvmee20.3.2-jdk8--alpine
+
+ENV MYSQL_HOST=mysql \
+    POLYGLOT_JS_DIR=/polyglot
+
+RUN mkdir /polyglot
+
+COPY target/qna-app-for-mysql-db-0.1.jar .
+COPY polyglot/calculator.js /polyglot/.
+COPY polyglot/hello.js /polyglot/.
+
+EXPOSE 8080
+
+# C2 with JFR enabled
+CMD ["java", "-XX:+UnlockDiagnosticVMOptions", "-XX:+DebugNonSafepoints", "-XX:+UnlockCommercialFeatures", "-XX:+FlightRecorder", "-XX:StartFlightRecording=duration=2m,delay=30s,name=JavaJFR,settings=profile,filename=./c2.jfr", "-XX:FlightRecorderOptions=loglevel=info", "-XX:-UseJVMCICompiler", "-jar", "qna-app-for-mysql-db-0.1.jar"]

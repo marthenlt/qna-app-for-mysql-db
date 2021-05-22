@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qna-app-on-graalvmee
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  selector:
+    app: qna-app-on-graalvmee
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qna-app-on-graalvmee
+  labels:
+    app: qna-app-on-graalvmee
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qna-app-on-graalvmee
+  template:
+    metadata:
+      labels:
+        app: qna-app-on-graalvmee
+    spec:
+      containers:
+        - name: qna-app-on-graalvmee
+          image: localhost:5000/marthen-qna-app-on-oracle-graalvmee-20.3.2-jdk8--alpine:4.0
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qna-app-on-c2
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  selector:
+    app: qna-app-on-c2
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qna-app-on-c2
+  labels:
+    app: qna-app-on-c2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qna-app-on-c2
+  template:
+    metadata:
+      labels:
+        app: qna-app-on-c2
+    spec:
+      containers:
+        - name: qna-app-on-c2
+          image: localhost:5000/marthen-qna-app-on-c2-jdk8--alpine:4.0
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
