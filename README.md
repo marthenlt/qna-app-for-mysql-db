@@ -8,14 +8,22 @@ Framework stacks:
 - DB: MySQL
 
 Update:
+
 22 Apr 2021: 
 - Add JFR (Java Flight Recording) JVM options to capture GC paused time & CPU & Memory utilisation.
 - `c2-with-jfr.sh` is shell sript to run the application and capture JFR on standard C2 JIT 
 - `graal-with-jfr.sh` is shell sript to run the application and capture JFR on standard Graal JIT 
+
+22 May 2021:
+- Add test support for container.
+
 
 Thanks!
 
 -Marthen Luther-
 
 (15 Aug 2020)
+
 (22 Apr 2021)
+
+(22 May 2021)
